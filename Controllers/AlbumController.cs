@@ -22,7 +22,15 @@ namespace PlaylistApp.Controllers
         // GET: Album
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Albums.ToListAsync());
+            var albums = await _context.Albums.Include(a => a.Songs).ToListAsync();
+
+            if (albums.Count() == 0)
+            {
+                return View("Empty");
+            }
+            
+
+            return View(albums);
         }
 
         // GET: Album/Details/5
@@ -54,7 +62,7 @@ namespace PlaylistApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,About")] Album album)
+        public async Task<IActionResult> Create([Bind("Id,Title")] Album album)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +94,7 @@ namespace PlaylistApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,About")] Album album)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title")] Album album)
         {
             if (id != album.Id)
             {
@@ -116,6 +124,7 @@ namespace PlaylistApp.Controllers
             return View(album);
         }
 
+        
         // GET: Album/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -124,25 +133,14 @@ namespace PlaylistApp.Controllers
                 return NotFound();
             }
 
-            var album = await _context.Albums
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (album == null)
+            var album = await _context.Albums.FindAsync(id);
+            if (id == null)
             {
                 return NotFound();
             }
-
-            return View(album);
-        }
-
-        // POST: Album/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var album = await _context.Albums.FindAsync(id);
             _context.Albums.Remove(album);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
         private bool AlbumExists(int id)

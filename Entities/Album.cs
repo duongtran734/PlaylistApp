@@ -7,7 +7,7 @@ namespace PlaylistApp.Entities
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string About { get; set; }
+
 
         [ForeignKey("AlbumId")]
         public virtual ICollection<Song> Songs{ get; set; }

@@ -4,34 +4,29 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
 
-<h4>Album</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="About" class="control-label"></label>
-                <input asp-for="About" class="form-control" />
-                <span asp-validation-for="About" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+
+<div class="row orderForm">
+    <form asp-controller="Album" asp-action="Edit" method="post" class="form-horizontal" role="form">
+        <h3 class="col-md-offset-2 p-lg-4">Edit Album: @Model.Title</h3>
+        <hr />
+        @Html.HiddenFor(m => Model.Id)
+    <div class="form-group">
+        
+        <label asp-for="@Model.Title" class="col-md-2 control-label"></label>
+        <div class="col-md-6">
+            <input asp-for="@Model.Title" type="text" class="form-control" style="width:500px" />
+            <span asp-validation-for="@Model.Title" class="text-danger"></span>
+        </div>
+
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
+        <div class="form-group">
+            <div class="btn-group col-md-offset-2 col-md-6">
+                <input class="btn btn-success" type="submit" value="Edit" />
+                <input class="btn btn-secondary" type="submit" value="Return" asp-controller="Album" asp-action="Index" />
+            </div>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
