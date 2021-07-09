@@ -1,4 +1,4 @@
-﻿@model PlaylistApp.Entities.Album
+﻿@model PlaylistApp.Models.ViewModels.AlbumViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -8,12 +8,13 @@
     <div class="col-md-4">
         <form asp-action="Create" asp-controller="Album" method="post" class="form-horizontal" role="form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.HiddenFor(x => x.Referer)
             <h3 class="col-md-offset-2 p-lg-4">Create new album</h3>
             <div class="form-group">
-                <label asp-for="Title" class="col-md-2 control-label"></label>
+                <label asp-for="Album.Title" class="col-md-2 control-label"></label>
                 <div class="col-md-6">
-                    <input asp-for="Title" class="form-control" placeholder="Enter album's title" style="width:500px"/>
-                    <span asp-validation-for="Title" class="text-danger"></span>
+                    <input asp-for="Album.Title" class="form-control" placeholder="Enter album's title" style="width:500px" />
+                    <span asp-validation-for="Album.Title" class="text-danger"></span>
                 </div>
             </div>
 

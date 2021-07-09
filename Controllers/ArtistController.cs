@@ -7,34 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PlaylistApp.Data;
 using PlaylistApp.Entities;
-using PlaylistApp.Models.ViewModels;
 
 namespace PlaylistApp.Controllers
 {
-    public class AlbumController : Controller
+    public class ArtistController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public AlbumController(ApplicationDbContext context)
+        public ArtistController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Album
+        // GET: Artist
         public async Task<IActionResult> Index()
         {
-            var albums = await _context.Albums.Include(a => a.Songs).ToListAsync();
-
-            if (albums.Count() == 0)
-            {
-                return View("Empty");
-            }
-            
-
-            return View(albums);
+            return View(await _context.Artists.ToListAsync());
         }
 
-        // GET: Album/Details/5
+        // GET: Artist/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,48 +33,39 @@ namespace PlaylistApp.Controllers
                 return NotFound();
             }
 
-            var album = await _context.Albums
+            var artist = await _context.Artists
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (album == null)
+            if (artist == null)
             {
                 return NotFound();
             }
 
-            return View(album);
+            return View(artist);
         }
 
-        // GET: Album/Create
+        // GET: Artist/Create
         public IActionResult Create()
         {
-           var viewModel = new AlbumViewModel
-            { Referer = Request.Headers["Referer"].ToString() };
-            return View(viewModel);
+            return View();
         }
 
-        // POST: Album/Create
+        // POST: Artist/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AlbumViewModel albumVM)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Artist artist)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View();
+                _context.Add(artist);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-
-            _context.Albums.Add(albumVM.Album);
-            await _context.SaveChangesAsync();
-
-            if (!String.IsNullOrEmpty(albumVM.Referer))
-            {
-                return Redirect(albumVM.Referer);
-            }
-
-            return RedirectToAction(nameof(Index));
+            return View(artist);
         }
 
-        // GET: Album/Edit/5
+        // GET: Artist/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -91,22 +73,22 @@ namespace PlaylistApp.Controllers
                 return NotFound();
             }
 
-            var album = await _context.Albums.FindAsync(id);
-            if (album == null)
+            var artist = await _context.Artists.FindAsync(id);
+            if (artist == null)
             {
                 return NotFound();
             }
-            return View(album);
+            return View(artist);
         }
 
-        // POST: Album/Edit/5
+        // POST: Artist/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title")] Album album)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Artist artist)
         {
-            if (id != album.Id)
+            if (id != artist.Id)
             {
                 return NotFound();
             }
@@ -115,12 +97,12 @@ namespace PlaylistApp.Controllers
             {
                 try
                 {
-                    _context.Update(album);
+                    _context.Update(artist);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AlbumExists(album.Id))
+                    if (!ArtistExists(artist.Id))
                     {
                         return NotFound();
                     }
@@ -131,11 +113,10 @@ namespace PlaylistApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(album);
+            return View(artist);
         }
 
-        
-        // GET: Album/Delete/5
+        // GET: Artist/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -143,19 +124,30 @@ namespace PlaylistApp.Controllers
                 return NotFound();
             }
 
-            var album = await _context.Albums.FindAsync(id);
-            if (id == null)
+            var artist = await _context.Artists
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (artist == null)
             {
                 return NotFound();
             }
-            _context.Albums.Remove(album);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+
+            return View(artist);
         }
 
-        private bool AlbumExists(int id)
+        // POST: Artist/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            return _context.Albums.Any(e => e.Id == id);
+            var artist = await _context.Artists.FindAsync(id);
+            _context.Artists.Remove(artist);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool ArtistExists(int id)
+        {
+            return _context.Artists.Any(e => e.Id == id);
         }
     }
 }
