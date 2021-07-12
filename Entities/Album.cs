@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using PlaylistApp.Interfaces;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlaylistApp.Entities
 {
-    public class Album
+    public class Album : IPrimaryProperties
     {
         public int Id { get; set; }
 
@@ -12,7 +13,7 @@ namespace PlaylistApp.Entities
         public string Title { get; set; }
 
 
-        [ForeignKey("AlbumId")]
+        //[ForeignKey("AlbumId")]
         public virtual ICollection<Song> Songs{ get; set; }
     }
 }
