@@ -11,7 +11,7 @@ namespace PlaylistApp.Entities
         public int Id { get; set; }
         public string Name { get; set; }
 
-        [ForeignKey("ArtistId")]
-        public virtual ICollection<ArtistSong> ArtistSongs { get; set; }
+       
+        public virtual ICollection<ArtistSong> ArtistSongs { get; set; }//N:M
     }
 }

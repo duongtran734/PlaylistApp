@@ -47,14 +47,12 @@ namespace PlaylistApp.Controllers
         // GET: Song/Create
         public async Task<IActionResult> Create()
         {
-            List<Album> albums = new List<Album>();
-            albums = await _context.Albums.ToListAsync();
-
-            Song song = new Song()
-            {
-                Albums = albums.ConvertToSelectList(0),
-            };
+            var albums = await _context.Albums.ToListAsync();
+            var artists = await _context.Artists.ToListAsync();
+            Song song = new Song();
+        
             song.AlbumCollection = albums;
+            song.ArtistCollection = artists;
             return View(song);
         }
 
@@ -63,12 +61,26 @@ namespace PlaylistApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Duration,AlbumId")] Song song)
+        public async Task<IActionResult> Create([Bind("Title,Duration,AlbumId, SelectArtistIds")] Song song)
         {
             if (ModelState.IsValid)
             {
+               //First Add the Song to the Song DB
                 _context.Add(song);
                 await _context.SaveChangesAsync();
+
+                //Then Add the the mapping to SongArtist
+                if (song.SelectArtistIds.Count() > 0)
+                {
+
+                    foreach (int artistID in song.SelectArtistIds)
+                    {
+                        ArtistSong artist_song = new ArtistSong() { ArtistId = artistID, SongId = song.Id };
+                        _context.ArtistSongs.Add(artist_song);
+                    }
+                }
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(song);

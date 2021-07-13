@@ -7,19 +7,19 @@
 <h3 class="m-3">Create new Song</h3>
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
 
 
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                <div class="row d-flex justify-content-between">
-                    <label asp-for="AlbumId" class="control-label col-md-3 p-0 pt-2 pb-2  text-center font-weight-bold"></label>
-                    <select asp-for="AlbumId" class="form-control col-md-4 mr-1" asp-items="@Model.Albums">
-                        <option value="">--Select a Album</option>
-                    </select>
-                    <a class="btn btn-success col-md-3 m-0" style="width:100%" asp-controller="Album" asp-action="Create">Create new Album</a>
+                <div class="row d-flex justify-content-around">
+                    <label asp-for="AlbumId" class="control-label col-md-4 p-0 pt-2 pb-2  text-center font-weight-bold"></label>
+                    <div class="col-md-8 p-0 d-flex justify-content-between">
+                        @Html.DropDownListFor(model => model.AlbumId, new SelectList(Model.AlbumCollection, "Id", "Title"), new { id = "chosen_select" })
+                        <a class="btn btn-success  p-0" style="width:30%; height:62%" asp-controller="Album" asp-action="Create">Create new Album</a>
+                    </div>
                     <span asp-validation-for="AlbumId" class="text-danger"></span>
                 </div>
 
@@ -46,17 +46,31 @@
                 </div>
             </div>
 
+
+
             <div class="form-group">
-                <div class="btn-group">
-                    <input class="btn btn-success" type="submit" value="Create" />
-                    <input class="btn btn-secondary" type="submit" value="Return" asp-controller="Song" asp-action="Index" />
+                <div class="row d-flex justify-content-lg-end">
+                    <label asp-for="SelectArtistIds" class="control-label col-md-4 p-0 pt-2 pb-2  text-center font-weight-bold"></label>
+                    <div class="col-md-8 p-0 d-flex justify-content-between">
+                        @Html.DropDownListFor(model => model.SelectArtistIds, new MultiSelectList(Model.ArtistCollection, "Id", "Name"), new { id = "multi_select", multiple = "multiple" })
+                        <a class="btn btn-success p-0" style="width:30%; height:62%" asp-controller="Artist" asp-action="Create">Create new Artist</a>
+                        <span asp-validation-for="SelectArtistIds" class="text-danger"></span>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+                <div class="row d-flex justify-content-center">
+                    <div class="btn-group"  style="width:34%">
+                        <input class="btn btn-success" type="submit" value="Create"/>
+                        <input class="btn btn-secondary" type="submit" value="Return" asp-controller="Song" asp-action="Index"/>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Albums</label>
-                @Html.DropDownListFor(model =>model.AlbumId, new SelectList(Model.AlbumCollection, "Id","Title"), new { id = "chosen_select" })
-            </div>
+
         </form>
     </div>
 </div>
@@ -68,8 +82,9 @@
 
     <script>
         $(function () {
-            $("#chosen_select").css('background-color','yellow')
-            $("#chosen_select").chosen({ width: "100%" });
+            $("#chosen_select").chosen({ width: "65%" });
+            $("#multi_select").chosen({ width: "65%" });
+
         });
     </script>
  

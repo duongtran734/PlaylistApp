@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlaylistApp.Data;
 
 namespace PlaylistApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210713051130_Modifed Song entity for Artist")]
+    partial class ModifedSongentityforArtist
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,21 +98,17 @@ namespace PlaylistApp.Migrations
 
             modelBuilder.Entity("PlaylistApp.Entities.ArtistSong", b =>
                 {
-                    b.HasOne("PlaylistApp.Entities.Artist", "Artist")
+                    b.HasOne("PlaylistApp.Entities.Artist", null)
                         .WithMany("ArtistSongs")
                         .HasForeignKey("ArtistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PlaylistApp.Entities.Song", "Song")
+                    b.HasOne("PlaylistApp.Entities.Song", null)
                         .WithMany("ArtistSongs")
                         .HasForeignKey("SongId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Artist");
-
-                    b.Navigation("Song");
                 });
 
             modelBuilder.Entity("PlaylistApp.Entities.Song", b =>
