@@ -35,7 +35,11 @@ namespace PlaylistApp.Controllers
             }
 
             var song = await _context.Songs
+                .Include(m=>m.Album)
+                .Include(m=>m.ArtistSongs)
+                .ThenInclude(m=>m.Artist)
                 .FirstOrDefaultAsync(m => m.Id == id);
+                
             if (song == null)
             {
                 return NotFound();
@@ -61,7 +65,7 @@ namespace PlaylistApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Duration,AlbumId, SelectArtistIds")] Song song)
+        public async Task<IActionResult> Create([Bind("Id,Title,Duration,AlbumId, SelectArtistIds")] Song song)
         {
             if (ModelState.IsValid)
             {

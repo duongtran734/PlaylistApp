@@ -20,10 +20,10 @@ namespace PlaylistApp.Entities
 
         
         public virtual ICollection<ArtistSong> ArtistSongs { get; set; } //N:M
-
+        /*
         [NotMapped] //telling EF to ignore this
         public virtual ICollection<SelectListItem> Albums { get; set; } // this is use for dropdown list (SelectListItem from .Rendering)
-
+        */
         
         [NotMapped] public IEnumerable<Album> AlbumCollection { get; set; }
         [NotMapped] public IEnumerable<Artist> ArtistCollection { get; set; }
