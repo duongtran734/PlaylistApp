@@ -97,12 +97,27 @@ namespace PlaylistApp.Controllers
             {
                 return NotFound();
             }
+            var song = await _context.Songs
+                .Include(s => s.ArtistSongs)
+                .ThenInclude(s=> s.Artist)
+                .FirstOrDefaultAsync(s => s.Id == id);
 
-            var song = await _context.Songs.FindAsync(id);
             if (song == null)
             {
                 return NotFound();
             }
+
+            // 3 NotMapped attributes initialize
+            song.AlbumCollection = await _context.Albums.ToListAsync();
+            song.ArtistCollection = await _context.Artists.ToListAsync();
+            //Add Artist ID to selectArtistIds [] to display in multi dropdown select
+            List<int> temp = new List<int>();
+            foreach (ArtistSong artistSong in song.ArtistSongs)
+            {
+                temp.Add(artistSong.ArtistId);
+            }
+            song.SelectArtistIds = temp.ToArray();
+
             return View(song);
         }
 
@@ -111,38 +126,81 @@ namespace PlaylistApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Duration,AlbumId")] Song song)
+        public async Task<IActionResult> Edit(int id, int[] SelectArtistIds)
         {
-            if (id != song.Id)
+            if (id == 0)
             {
                 return NotFound();
             }
+            
 
-            if (ModelState.IsValid)
+            var song = await _context.Songs
+                .Include(s => s.ArtistSongs).ThenInclude(s => s.Artist)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (await TryUpdateModelAsync<Song>(
+               song,
+               "",
+               i => i.Title, i => i.Duration, i => i.Album))
             {
+                UpdateSongArtists(SelectArtistIds, song);
                 try
                 {
-                    _context.Update(song);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException /* ex */)
                 {
-                    if (!SongExists(song.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
                 }
                 return RedirectToAction(nameof(Index));
+
             }
+
+            UpdateSongArtists(song.SelectArtistIds, song);
             return View(song);
         }
 
-        // GET: Song/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        private void UpdateSongArtists(int[] selectedArtist, Song songToUpdate)
+        {
+            //If no checkboxes were selected, the code in UpdateInstructorCourses initializes
+            //the CourseAssignments navigation property with an empty collection and returns:
+            if (selectedArtist == null)
+            {
+                songToUpdate.ArtistSongs = new List<ArtistSong>();
+                return;
+            }
+
+
+            var selectedCArtistsHS = new HashSet<int>(selectedArtist);
+            var songArtists = new HashSet<int>(songToUpdate.ArtistSongs.Select(a => a.Artist.Id));
+                //(instructorToUpdate.CourseAssignments.Select(c => c.Course.CourseID));
+
+            foreach (var artist in _context.Artists)
+            {
+                if (selectedCArtistsHS.Contains(artist.Id))
+                {
+                    if (!songArtists.Contains(artist.Id))
+                    {
+                       songToUpdate.ArtistSongs.Add(new ArtistSong { ArtistId = artist.Id , SongId = songToUpdate.Id });
+                    }
+                }
+                else
+                {
+                    if (songArtists.Contains(artist.Id))
+                    {
+                        // the course is removed from the navigation property.
+                        ArtistSong artistToRemove = songToUpdate.ArtistSongs.FirstOrDefault(i => i.ArtistId == artist.Id);
+                        _context.Remove(artistToRemove);
+                    }
+                }
+            }
+        }
+
+            // GET: Song/Delete/5
+            public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {

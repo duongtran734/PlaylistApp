@@ -9,36 +9,80 @@
 <h4>Song</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <div class="row d-flex justify-content-around">
+                    <label asp-for="AlbumId" class="control-label col-md-4 p-0 pt-2 pb-2  text-center font-weight-bold"></label>
+                    <div class="col-md-8 p-0 d-flex justify-content-between">
+                        @Html.DropDownListFor(model => model.AlbumId, new SelectList(Model.AlbumCollection, "Id", "Title"), new { id = "chosen_select" })
+                        <a class="btn btn-success  p-0" style="width:30%; height:62%" asp-controller="Album" asp-action="Create">Create new Album</a>
+                    </div>
+                    <span asp-validation-for="AlbumId" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    <label asp-for="Title" class="control-label col-md-4 p-0 pt-2 pb-2  text-center font-weight-bold"></label>
+                    <div class="col-md-8 p-0">
+                        <input asp-for="Title" class="form-control p-0" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="Duration" class="control-label"></label>
-                <input asp-for="Duration" class="form-control" />
-                <span asp-validation-for="Duration" class="text-danger"></span>
+                <div class="row">
+                    <label asp-for="Duration" class="control-label col-md-4 p-0 pt-2 pb-2  text-center font-weight-bold"></label>
+                    <div class="col-md-8 p-0">
+                        <input asp-for="Duration" class="form-control p-0" />
+                        <span asp-validation-for="Duration" class="text-danger"></span>
+                    </div>
+
+                </div>
             </div>
+
+
+
             <div class="form-group">
-                <label asp-for="AlbumId" class="control-label"></label>
-                <select asp-for="AlbumId" class="form-control" asp-items="ViewBag.AlbumId"></select>
-                <span asp-validation-for="AlbumId" class="text-danger"></span>
+                <div class="row d-flex justify-content-lg-end">
+                    <label asp-for="SelectArtistIds" class="control-label col-md-4 p-0 pt-2 pb-2  text-center font-weight-bold"></label>
+                    <div class="col-md-8 p-0 d-flex justify-content-between">
+                        @*Multi Select using jQuery Chosen*@
+                        @Html.ListBoxFor(model => model.SelectArtistIds, new MultiSelectList(Model.ArtistCollection, "Id", "Name"), new { id = "multi_select", multiple = "multiple" })
+                        <a class="btn btn-success p-0" style="width:30%; height:62%" asp-controller="Artist" asp-action="Create">Create new Artist</a>
+                        <span asp-validation-for="SelectArtistIds" class="text-danger"></span>
+                    </div>
+                </div>
+
             </div>
+
+
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <div class="row d-flex justify-content-center">
+                    <div class="btn-group" style="width:34%">
+                        <input class="btn btn-success" type="submit" value="Edit" />
+                        <input class="btn btn-secondary" type="submit" value="Return" asp-controller="Song" asp-action="Index" />
+                    </div>
+                </div>
             </div>
+
+
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(function () {
+            $("#chosen_select").chosen({ width: "65%" });
+            $("#multi_select").chosen({ width: "65%" });
+
+        });
+    </script>
 }

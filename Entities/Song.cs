@@ -29,5 +29,6 @@ namespace PlaylistApp.Entities
         [NotMapped] public IEnumerable<Artist> ArtistCollection { get; set; }
         [DisplayName("Artist")][NotMapped] public int[] SelectArtistIds { get; set; }
 
+
     }
 }
