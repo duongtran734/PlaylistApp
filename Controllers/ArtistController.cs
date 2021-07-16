@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PlaylistApp.Data;
 using PlaylistApp.Entities;
+using PlaylistApp.Models.ViewModels;
 
 namespace PlaylistApp.Controllers
 {
@@ -46,7 +47,9 @@ namespace PlaylistApp.Controllers
         // GET: Artist/Create
         public IActionResult Create()
         {
-            return View();
+            var viewModel = new ArtistViewModel
+            { Referer = Request.Headers["Referer"].ToString() };
+            return View(viewModel);
         }
 
         // POST: Artist/Create
@@ -54,15 +57,22 @@ namespace PlaylistApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Artist artist)
+        public async Task<IActionResult> Create([Bind("Artist, Referer")] ArtistViewModel artistVM)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(artist);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View();
             }
-            return View(artist);
+
+            _context.Artists.Add(artistVM.Artist);
+            await _context.SaveChangesAsync();
+
+            if (!String.IsNullOrEmpty(artistVM.Referer))
+            {
+                return Redirect(artistVM.Referer);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Artist/Edit/5
