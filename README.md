@@ -21,7 +21,7 @@ A Music PlayList App system built in .NET 5.0 with Entity Framework Core. Enable
 
 ### Album
 - View
-<img src="images-readme/playlist-index.PNG"></img>
+<img src="images-readme/album-index.PNG"></img>
 
 ### Song
 - Create
