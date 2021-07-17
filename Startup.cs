@@ -54,7 +54,7 @@ namespace PlaylistApp
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=PlayList}/{action=Index}/{id?}");
             });
         }
     }

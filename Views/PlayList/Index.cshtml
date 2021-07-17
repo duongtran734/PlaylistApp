@@ -4,12 +4,15 @@
     ViewData["Title"] = "Index";
 }
 
-<a class="btn btn-success mt-5 m-2" asp-controller="PlayList" asp-action="Create">Create new Playlist</a>
+<div class="m-3 p-3"style="width:100%; text-align:center">
+    <h1>PlayList</h1>
+</div>
 
+    <a class="btn btn-success ml-1" asp-controller="PlayList" asp-action="Create">Create new Playlist</a>
 <div class="row">
     @foreach (var playlist in Model)
     {
-        <div class="card text-white  m-2" style="max-width: 25rem;">
+        <div class="card text-white  m-3" style="max-width: 25rem;">
             <div class="card-header bg-primary">@playlist.Name</div>
             <div class="card-body">
                 <h5 class="card-title" style="color:black">Songs Count: @playlist.PlayListSongs.Count()</h5>
@@ -20,7 +23,7 @@
                     }
                     else
                     {
-                        <a class="btn btn-outline-primary mr-2" asp-controller="Song" asp-action="AlbumSongIndex" asp-route-albumID="@playlist.Id" asp-area="">View Songs</a>
+                        <a class="btn btn-outline-primary mr-2" asp-controller="PlayList" asp-action="PlayListSong" asp-route-playlistID="@playlist.Id" asp-area="">View Songs</a>
                     }
                     <a class="btn btn-info mr-2" asp-area="" asp-controller="PlayList" asp-action="Edit" asp-route-id="@playlist.Id">Edit</a>
                     <a class="btn btn-danger mr-2" asp-area="" asp-controller="PlayList" asp-action="Delete" asp-route-id="@playlist.Id">Delete</a>

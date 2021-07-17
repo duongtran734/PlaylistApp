@@ -126,6 +126,39 @@ namespace PlaylistApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        public async Task<IActionResult> PlayListSong(int playlistID)
+        {
+            var playlistSong = await _context.PlayListSongs
+                .Include(s=>s.PlayList)
+                .Include(s=>s.Song)
+                .ThenInclude(s=>s.ArtistSongs)
+                .ThenInclude(s=>s.Artist)
+                .Include(s=>s.Song)
+                .ThenInclude(s=>s.Album)
+                .Where(s => s.PlayListId == playlistID)
+                .ToListAsync();
+    
+            return View(playlistSong);
+        }
+
+        public async Task<IActionResult> RemovePlayListSong(int? playlistSongID, int playlistId)
+        {
+            if (playlistSongID == null)
+            {
+                return NotFound();
+            }
+
+            var playlistSong = await _context.PlayListSongs.FindAsync(playlistSongID);
+            if (playlistSong== null)
+            {
+                return NotFound();
+            }
+            _context.PlayListSongs.Remove(playlistSong);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(PlayListSong), new { playlistID = playlistId});
+        }
+
         // GET: Album/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -134,12 +167,12 @@ namespace PlaylistApp.Controllers
                 return NotFound();
             }
 
-            var album = await _context.Albums.FindAsync(id);
-            if (album == null)
+            var playlist = await _context.PlayLists.FindAsync(id);
+            if (playlist == null)
             {
                 return NotFound();
             }
-            return View(album);
+            return View(playlist);
         }
 
         // POST: Album/Edit/5
@@ -147,9 +180,9 @@ namespace PlaylistApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title")] Album album)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] PlayList playlist)
         {
-            if (id != album.Id)
+            if (id != playlist.Id)
             {
                 return NotFound();
             }
@@ -158,12 +191,12 @@ namespace PlaylistApp.Controllers
             {
                 try
                 {
-                    _context.Update(album);
+                    _context.Update(playlist);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AlbumExists(album.Id))
+                    if (!PlayListExists(playlist.Id))
                     {
                         return NotFound();
                     }
@@ -174,7 +207,7 @@ namespace PlaylistApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(album);
+            return View(playlist);
         }
 
 
@@ -187,7 +220,7 @@ namespace PlaylistApp.Controllers
             }
 
             var playlist = await _context.PlayLists.FindAsync(id);
-            if (id == null)
+            if (playlist == null)
             {
                 return NotFound();
             }
@@ -196,9 +229,11 @@ namespace PlaylistApp.Controllers
             return RedirectToAction("Index");
         }
 
-        private bool AlbumExists(int id)
+        private bool PlayListExists(int id)
         {
-            return _context.Albums.Any(e => e.Id == id);
+            return _context.PlayLists.Any(e => e.Id == id);
         }
+
+
     }
 }

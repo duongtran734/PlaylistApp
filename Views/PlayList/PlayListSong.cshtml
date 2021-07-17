@@ -1,0 +1,55 @@
+﻿@model IEnumerable<PlaylistApp.Entities.PlayListSong>
+
+@{
+    ViewData["Title"] = "AddSongToPlaylist";
+}
+<br />
+<h1>Songs in PlayList</h1>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Duration
+            </th>
+
+            <th>
+                Album
+            </th>
+            <th>
+                Artist
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Song.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Song.Duration)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Song.Album.Title)
+                </td>
+                <td>
+                    @Html.Raw(string.Join(" , ", item.Song.ArtistSongs.Select(s => string.Format("<span>{0}</span>", s.Artist.Name))))
+                </td>
+                <td>
+                    <a class="btn-danger p-2" asp-controller="PlayList" asp-action="RemovePlayListSong" asp-route-playlistSongID="@item.Id" asp-route-playlistId="@item.PlayListId">Delete</a>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-controller="PlayList" asp-action="Index">
+    <button class="btn-primary p-2">Return To Playlist</button>
+</a>
+
