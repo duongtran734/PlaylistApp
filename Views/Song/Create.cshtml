@@ -53,7 +53,7 @@
                     <label asp-for="SelectArtistIds" class="control-label col-md-4 p-0 pt-2 pb-2  text-center font-weight-bold"></label>
                     <div class="col-md-8 p-0 d-flex justify-content-between">
                         @Html.DropDownListFor(model => model.SelectArtistIds, new MultiSelectList(Model.ArtistCollection, "Id", "Name"), new { id = "multi_select", multiple = "multiple" })
-                        <a class="btn btn-success p-0" style="width:30%; height:62%" asp-controller="Artist" asp-action="Create">Create new Artist</a>
+                        <a class="btn btn-success p-0 ml-5" style="width:30%; height:62%" asp-controller="Artist" asp-action="Create">Create new Artist</a>
                         <span asp-validation-for="SelectArtistIds" class="text-danger"></span>
                     </div>
                 </div>

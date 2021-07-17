@@ -1,0 +1,57 @@
+﻿@model PlaylistApp.Models.ViewModels.AddSongPlaylistViewModel
+
+@{
+    ViewData["Title"] = "AddSongToPlaylist";
+}
+
+<h1>Add Song To Playlist</h1>
+
+@if ((int?)ViewData["Contain"] == 1)
+{
+   
+    <p style="color:red">The Song is already added to the playlist</p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Duration
+            </th>
+
+            <th>
+                Album
+            </th>
+            <th>
+                Artist
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Songs)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Duration)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Album.Title)
+                </td>
+                <td>
+                    @Html.Raw(string.Join(" , ", item.ArtistSongs.Select(s => string.Format("<span>{0}</span>", s.Artist.Name))))
+                </td>
+                <td>
+                    <a asp-controller="PlayList" asp-action="AddSongToPlaylistDb" asp-route-songId="@item.Id" asp-route-playlistId="@Model.PlayList.Id">Add</a>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

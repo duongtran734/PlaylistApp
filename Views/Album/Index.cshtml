@@ -20,19 +20,11 @@
                     }
                     else
                     {
-                        <a class="btn btn-outline-primary mr-2" asp-area="">View Songs</a>
+                        <a class="btn btn-outline-primary mr-2" asp-controller="Song" asp-action="AlbumSongIndex" asp-route-albumID="@album.Id" asp-area="">View Songs</a>
                     }
                     <a class="btn btn-info mr-2" asp-area="" asp-controller="Album" asp-action="Edit" asp-route-id="@album.Id">Edit</a>
                     <a class="btn btn-danger" asp-area="" asp-controller="Album" asp-action="Delete" asp-route-id="@album.Id">Delete</a>
-
                 </div>
-                
-
-
-
-
-      
-
             </div>
         </div>
 

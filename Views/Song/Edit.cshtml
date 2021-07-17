@@ -18,7 +18,7 @@
                     <label asp-for="AlbumId" class="control-label col-md-4 p-0 pt-2 pb-2  text-center font-weight-bold"></label>
                     <div class="col-md-8 p-0 d-flex justify-content-between">
                         @Html.DropDownListFor(model => model.AlbumId, new SelectList(Model.AlbumCollection, "Id", "Title"), new { id = "chosen_select" })
-                        <a class="btn btn-success  p-0" style="width:30%; height:62%" asp-controller="Album" asp-action="Create">Create new Album</a>
+                        <a class="btn btn-primary  p-0" style="width:30%; height:62%" asp-controller="Album" asp-action="Create">Create new Album</a>
                     </div>
                     <span asp-validation-for="AlbumId" class="text-danger"></span>
                 </div>
@@ -49,12 +49,12 @@
 
 
             <div class="form-group">
-                <div class="row d-flex justify-content-lg-end">
+                <div class="row d-flex justify-content-around">
                     <label asp-for="SelectArtistIds" class="control-label col-md-4 p-0 pt-2 pb-2  text-center font-weight-bold"></label>
                     <div class="col-md-8 p-0 d-flex justify-content-between">
                         @*Multi Select using jQuery Chosen*@
                         @Html.ListBoxFor(model => model.SelectArtistIds, new MultiSelectList(Model.ArtistCollection, "Id", "Name"), new { id = "multi_select", multiple = "multiple" })
-                        <a class="btn btn-success p-0" style="width:30%; height:62%" asp-controller="Artist" asp-action="Create">Create new Artist</a>
+                        <a class="btn btn-primary p-0 ml-5" style="width:30%; height:62%" asp-controller="Artist" asp-action="Create">Create new Artist</a>
                         <span asp-validation-for="SelectArtistIds" class="text-danger"></span>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
             <div class="form-group">
                 <div class="row d-flex justify-content-center">
                     <div class="btn-group" style="width:34%">
-                        <input class="btn btn-success" type="submit" value="Edit" />
+                        <input class="btn btn-primary" type="submit" value="Edit" />
                         <input class="btn btn-secondary" type="submit" value="Return" asp-controller="Song" asp-action="Index" />
                     </div>
                 </div>
@@ -82,6 +82,7 @@
         $(function () {
             $("#chosen_select").chosen({ width: "65%" });
             $("#multi_select").chosen({ width: "65%" });
+            $("#multi_select").css({ "margin-right": "200px" });
 
         });
     </script>

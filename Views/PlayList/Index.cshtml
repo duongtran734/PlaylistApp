@@ -1,0 +1,33 @@
+﻿@model IEnumerable<PlaylistApp.Entities.PlayList>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<a class="btn btn-success mt-5 m-2" asp-controller="PlayList" asp-action="Create">Create new Playlist</a>
+
+<div class="row">
+    @foreach (var playlist in Model)
+    {
+        <div class="card text-white  m-2" style="max-width: 25rem;">
+            <div class="card-header bg-primary">@playlist.Name</div>
+            <div class="card-body">
+                <h5 class="card-title" style="color:black">Songs Count: @playlist.PlayListSongs.Count()</h5>
+                <div style="display:flex; justify-content:space-evenly">
+                    @if (playlist.PlayListSongs.Count() == 0)
+                    {
+                        <a class="btn btn-outline-primary disabled mr-2" asp-area="">View Songs</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-primary mr-2" asp-controller="Song" asp-action="AlbumSongIndex" asp-route-albumID="@playlist.Id" asp-area="">View Songs</a>
+                    }
+                    <a class="btn btn-info mr-2" asp-area="" asp-controller="PlayList" asp-action="Edit" asp-route-id="@playlist.Id">Edit</a>
+                    <a class="btn btn-danger mr-2" asp-area="" asp-controller="PlayList" asp-action="Delete" asp-route-id="@playlist.Id">Delete</a>
+                    <a class="btn btn-info" asp-area="" asp-controller="PlayList" asp-action="AddSongToPlaylist" asp-route-playlistID="@playlist.Id">Add Song</a>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>

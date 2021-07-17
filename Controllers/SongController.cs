@@ -25,6 +25,13 @@ namespace PlaylistApp.Controllers
         {
             return View(await _context.Songs.ToListAsync());
         }
+        public async Task<IActionResult> AlbumSongIndex(int albumID)
+        {
+            var song = await _context.Songs
+                .Include(s=>s.Album)
+                .Where(s => s.AlbumId == albumID).ToListAsync();
+            return View(song);
+        }
 
         // GET: Song/Details/5
         public async Task<IActionResult> Details(int? id)
